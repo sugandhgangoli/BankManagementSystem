@@ -3,6 +3,7 @@ package com.example.bank.exception;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,13 @@ public class GlobalExceptionHandler {
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
 		return new ResponseEntity(errorDetails, HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<?> handleContraintViolationExceptionHandler(ConstraintViolationException exception,
+			WebRequest request) {
+		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
+		return new ResponseEntity(errorDetails, HttpStatus.NOT_FOUND);
+	}
 
 	@ExceptionHandler(APIException.class)
 	public ResponseEntity<?> handleAPIExceptionHandler(APIException exception, WebRequest request) {
@@ -31,14 +39,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public ResponseEntity<?> handleDuplicateDataExceptionHandler(SQLIntegrityConstraintViolationException exception,
-			WebRequest request) {
-
-		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
-		return new ResponseEntity(errorDetails, HttpStatus.OK);
-	}
-
-	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<?> handleDataVoilationExceptionHandler(DataIntegrityViolationException exception,
 			WebRequest request) {
 
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));

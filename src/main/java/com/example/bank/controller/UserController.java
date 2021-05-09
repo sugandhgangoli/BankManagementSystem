@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bank.entity.User;
+import com.example.bank.exception.APIException;
 import com.example.bank.service.UserService;
 
 @RestController
@@ -42,7 +43,7 @@ public class UserController {
 	// Create a Users
 
 	@PostMapping
-	public User registerUser(@RequestBody User user) {
+	public User registerUser(@RequestBody User user) throws APIException {
 		return this.userService.registerUser(user);
 	}
 

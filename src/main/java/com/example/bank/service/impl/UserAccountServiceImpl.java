@@ -7,12 +7,16 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.WebRequest;
 
 import com.example.bank.entity.User;
 import com.example.bank.entity.UserAccount;
 import com.example.bank.exception.APIException;
 import com.example.bank.exception.ErrorDetails;
+import com.example.bank.exception.ResourceNotFoundException;
 import com.example.bank.repository.UserAccountRepository;
 import com.example.bank.service.UserAccountService;
 import com.example.bank.service.UserBankStatementService;
@@ -41,9 +45,10 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 
 	@Override
-	public boolean creditAccount(long accountNumber, double amount) {
+	public boolean creditAccount(long accountNumber, double amount)throws APIException {
+		
 		if (amount <= 0)
-			return false;
+			throw new APIException("Invalid Amount");
 		UserAccount account = this.userAccountRepository.findByAccountNumber(accountNumber);
 		account.setAmount(account.getAmount() + amount);
 		this.userBankStatementService.insertCreditLine(account, amount);
@@ -51,9 +56,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 
 	@Override
-	public boolean debitAccount(long accountNumber, double amount) {
+	public boolean debitAccount(long accountNumber, double amount)throws APIException {
 		if (amount <= 0)
-			return false;
+			throw new APIException("Invalid Amount");
 		UserAccount account = this.userAccountRepository.findByAccountNumber(accountNumber);
 		if (account.getAmount() < amount)
 			return false;
@@ -64,20 +69,19 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 	@Override
 	public boolean transferFund(long accountNumber1, long accountNumber2, double amount) throws APIException {
+		if(accountNumber1 == accountNumber2)
+			throw new APIException("Invalid account numbers. Both account numbers are same");
 		try {
-			if (accountNumber1 != accountNumber2) {
 				UserAccount fromAccount = this.userAccountRepository.findByAccountNumber(accountNumber1);
 				UserAccount toAccount = this.userAccountRepository.findByAccountNumber(accountNumber2);
-				debitAccount(toAccount.getAccountNumber(), amount);
+				debitAccount(fromAccount.getAccountNumber(), amount);
 				creditAccount(toAccount.getAccountNumber(), amount);
 				return true;
-			}
-		} catch (DataIntegrityViolationException exception) {
-			
+		} catch (APIException exception) {
+			throw new APIException("Fund Transfer Failed :" + exception.getMessage());
 		}
-		return false;
 	}
-
+	
 	@Override
 	public List<UserAccount> getUserAccount(int userId) {
 		return this.userAccountRepository.findByUserId(userId);

@@ -24,24 +24,20 @@ public class UserAccount {
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int accountId;
-	
+
 	private String accountType;
-	
-	@Column(unique=true)
+
+	@Column(unique = true)
 	private long accountNumber;
-	
+
 	private double amount;
-	
-	
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
-	
+
 	@OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL)
-	private List<UserBankStatement> statement ;
-
-
+	private List<UserBankStatement> statement;
 
 	public String getAccountType() {
 		return accountType;
@@ -66,6 +62,7 @@ public class UserAccount {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 	public long getAccountNumber() {
 		return accountNumber;
 	}
@@ -73,7 +70,6 @@ public class UserAccount {
 	public void setAccountNumber(int accountNumber) {
 		this.accountNumber = accountNumber;
 	}
-
 
 	public UserAccount() {
 		super();

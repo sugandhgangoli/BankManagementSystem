@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.bank.entity.UserAddress;
 
-public interface UserAddressServiceRepository extends JpaRepository<UserAddress, Integer>{
+public interface UserAddressRepository extends JpaRepository<UserAddress, Integer>{
 
 }

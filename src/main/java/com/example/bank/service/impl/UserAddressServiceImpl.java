@@ -5,19 +5,19 @@ import org.springframework.stereotype.Service;
 
 import com.example.bank.entity.User;
 import com.example.bank.entity.UserAddress;
-import com.example.bank.repository.UserAddressServiceRepository;
+import com.example.bank.repository.UserAddressRepository;
 import com.example.bank.service.UserAddressService;
 
 @Service
 public class UserAddressServiceImpl implements UserAddressService{
 	
 	@Autowired
-	private UserAddressServiceRepository UserAddressServiceRepository;
+	private UserAddressRepository userAddressRepository;
 
 	@Override
 	public UserAddress createAddress(UserAddress address, User user) {
 		address.setUser(user);
-		return this.UserAddressServiceRepository.save(address);
+		return this.userAddressRepository.save(address);
 	}
 
 }

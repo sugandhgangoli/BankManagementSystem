@@ -47,7 +47,7 @@ public class UserAccountController {
 
 	
 	@PostMapping("/transfer")
-	  public boolean transferFund(@RequestParam long accountNumber1, @RequestParam long accountNumber2, @RequestParam double amount) {
+	  public boolean transferFund(@RequestParam long accountNumber1, @RequestParam long accountNumber2, @RequestParam double amount) throws APIException {
 	  return this.userAccountService.transferFund(accountNumber1, accountNumber2, amount);
 	  }
 	 

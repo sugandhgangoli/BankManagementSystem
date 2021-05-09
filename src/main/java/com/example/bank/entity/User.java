@@ -16,7 +16,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,41 +25,43 @@ import com.sun.istack.NotNull;
 @Entity
 @Table(name = "user")
 public class User {
-	
-	//private String ACTIVE = BankConstants.ACTIVE.getStatus();
 
 	@Id
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
-	
+
 	@NotNull
 	private String firstName;
-	
+
 	private String lastName;
-	
-	@Column(unique=true)
-	@Email
+
+	@Column(unique = true)
+	@Email(regexp = ".+@.+\\..+", message = "Email should be valid")
 	private String emailId;
-	
-	@Column(unique=true)
+
+	@Column(unique = true)
 	private String panNumber;
-	
+
+	/*
+	 * @Column(columnDefinition = "varchar(6) default 'Active'") private String
+	 * status;
+	 */
 	private BankConstants status;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
 	private Date createDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@UpdateTimestamp
 	private Date modifiedDate;
-	
-	@OneToOne(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private UserAddress userAddress;
-	
-	@OneToMany(mappedBy="user", cascade = CascadeType.ALL)
-	 private List<UserAccount> userAccount;
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private UserAddress userAddress;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<UserAccount> userAccount;
 
 	public User() {
 		super();
@@ -110,14 +111,12 @@ public class User {
 		this.userAddress = userAddress;
 		userAddress.setUser(this);
 	}
-	
+
 	public void removeUserAddress() {
-        if (userAddress != null) {
-        	userAddress.setUser(null);
-        }
-        this.userAddress = null;
-    }
-	
-	
+		if (userAddress != null) {
+			userAddress.setUser(null);
+		}
+		this.userAddress = null;
+	}
 
 }

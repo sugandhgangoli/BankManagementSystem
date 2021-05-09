@@ -9,7 +9,15 @@ public class APIException extends RuntimeException {
 	private String message;
 
 	public APIException(String message) {
-		super();
+		super(message);
+		this.message = message;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
 		this.message = message;
 	}
 }
